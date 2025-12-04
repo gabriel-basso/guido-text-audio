@@ -11,18 +11,6 @@ A ideia central é transformar texto em uma sequência de sons, onde:
 
 ---
 
-## Objetivo
-
-Explorar a relação entre texto e som, criando um sistema simples de “transcrição sonora” que:
-- Codifica letras em frequências musicais;
-- Produz um arquivo de áudio estéreo a partir de uma string de entrada;
-- Demonstra, na prática, conceitos de:
-  - Representação digital de áudio,
-  - Geração de ondas quadradas,
-  - Mapeamento simbólico → frequência (Hz).
-
----
-
 ## Conceito
 
 O projeto se baseia em algumas ideias principais:
