@@ -21,7 +21,7 @@ O projeto se baseia em algumas ideias principais:
   - **Vogais (`a, e, i, o, u`...)**  
     Mapeadas para frequências do **canal esquerdo** (`nota_esq`), criando uma linha melódica base.
   - **Consoantes (`b, c, d, f`...)**  
-    Mapeadas para frequências do **canal direito** (`nota_dir`), gerando uma espécie de contraponto rítmico/harmônico.
+    Mapeadas para frequências do **canal direito** (`nota_dir`), gerando uma espécie de contraponto.
   - **Espaços (`' '`)**  
     Convertidos em **silêncio** (pausas) em ambos os canais.
   - **Outros caracteres**  
