@@ -15,11 +15,9 @@
 #define A4 440.00
 #define B4 493.88
 
-//definindo qualidade do som
+
 #define SAMPLE_RATE 44100
-//definindo duração de cada nota 
 #define DURATION 0.3 
-//definido altura do som
 #define AMPLITUDE 12000
 
 
@@ -34,12 +32,12 @@ double mapear_vogal(char c){
     }
 }
 
-// Função para mapear consoantes para intervalos (canal direito)
+
 double mapear_consoante(char c, double nota_atual) {
-    // Escala: C4, D4, E4, F4, G4, A4, B4
+    
     double escala[7] = {C4, D4, E4, F4, G4, A4, B4};
     int idx = 0;
-    // Descobrir índice da nota atual
+   
     for (int i = 0; i < 7; i++) {
         if (fabs(nota_atual - escala[i]) < 1.0) {
             idx = i;
@@ -50,23 +48,23 @@ double mapear_consoante(char c, double nota_atual) {
         case 'b': case 'p':
             return escala[idx]; // mesma nota
         case 'c': case 'k': case 's': case 'q':
-            return escala[(idx + 1) % 7]; // próxima nota
+            return escala[(idx + 1) % 7]; 
         case 'd': case 't':
-            return escala[(idx + 2) % 7]; // terceira nota
+            return escala[(idx + 2) % 7]; 
         case 'f': case 'v':
-            return escala[(idx + 3) % 7]; // quarta nota
+            return escala[(idx + 3) % 7]; 
         case 'g': case 'j':
-            return escala[(idx + 4) % 7]; // quinta nota
+            return escala[(idx + 4) % 7]; 
         case 'l': case 'r':
-            return escala[(idx + 5) % 7]; // sexta nota
+            return escala[(idx + 5) % 7]; 
         case 'm': case 'n':
-            return escala[(idx + 6) % 7]; // sétima nota
+            return escala[(idx + 6) % 7]; 
         default:
-            return nota_atual; // mantém a nota
+            return nota_atual; 
     }
 }
 
-// Gera onda quadrada para uma frequência
+
 void gerar_onda_quadrada(int16_t* buffer, int num_samples, double freq) {
     if (freq == 0.0) {
         memset(buffer, 0, num_samples * sizeof(int16_t));
@@ -78,23 +76,21 @@ void gerar_onda_quadrada(int16_t* buffer, int num_samples, double freq) {
     }
 }
 
-// Gera silêncio
 void gerar_silencio(int16_t* buffer, int num_samples) {
     memset(buffer, 0, num_samples * sizeof(int16_t));
 }
 
-// Verifica se é vogal
 int eh_vogal(char c) {
     return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
 }
 
-// Verifica se é consoante mapeada
+
 int eh_consoante(char c) {
     return (strchr("bpcksqdtfvgjlrmn", c) != NULL);
 }
 
 int main() {
-    // 1. Ler arquivo texto
+    
     FILE* f = fopen("entrada.txt", "r");
     if (!f) {
         printf("Erro ao abrir entrada.txt\n");
@@ -108,23 +104,23 @@ int main() {
     }
     fclose(f);
 
-    // 2. Inicializar buffers de áudio
+    
     int samples_por_som = (int)(SAMPLE_RATE * DURATION);
     int total_samples = samples_por_som * strlen(texto);
     int16_t* canal_esquerdo = calloc(total_samples, sizeof(int16_t));
     int16_t* canal_direito  = calloc(total_samples, sizeof(int16_t));
 
-    // 3. Notas iniciais
-    double nota_esq = C4; // Começa em C4
-    double nota_dir = C4; // Começa em C4
+    
+    double nota_esq = C4; 
+    double nota_dir = C4; 
 
     printf("Sequencia de notas:\n");
 
-    // 4. Processar cada caractere
+    
     int pos = 0;
     for (size_t i = 0; i < strlen(texto); i++) {
         char c = texto[i];
-        if (c >= 'A' && c <= 'Z') c = c + 32; // minúscula
+        if (c >= 'A' && c <= 'Z') c = c + 32; 
 
         if (c == ' ') {
             printf("[pausa]\n");
@@ -141,7 +137,7 @@ int main() {
             gerar_onda_quadrada(&canal_esquerdo[pos], samples_por_som, nota_esq);
             gerar_onda_quadrada(&canal_direito[pos], samples_por_som, nota_dir);
         } else {
-            // Ignorar outros caracteres
+            
             printf("%c: [Ignorado]\n", c);
             gerar_onda_quadrada(&canal_esquerdo[pos], samples_por_som, nota_esq);
             gerar_onda_quadrada(&canal_direito[pos], samples_por_som, nota_dir);
@@ -149,7 +145,7 @@ int main() {
         pos += samples_por_som;
     }
 
-    // 5. Escrever arquivo WAV estéreo
+   
     drwav_data_format format;
     format.container = drwav_container_riff;
     format.format = DR_WAVE_FORMAT_PCM;
@@ -165,14 +161,14 @@ int main() {
         return 1;
     }
 
-    // Intercalar canais (L, R, L, R, ...)
+    
     for (int i = 0; i < total_samples; i++) {
         int16_t frame[2] = {canal_esquerdo[i], canal_direito[i]};
         drwav_write_pcm_frames(&wav, 1, frame);
     }
     drwav_uninit(&wav);
 
-    // 6. Liberar memória
+   
     free(canal_esquerdo);
     free(canal_direito);
 
